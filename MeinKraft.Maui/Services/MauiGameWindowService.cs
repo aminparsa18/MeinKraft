@@ -10,16 +10,10 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using SkiaSharp.Views.Maui.Controls;
-using System.Runtime.InteropServices;
-
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-
-
 #if WINDOWS
-using MeinKraft.Maui.Platforms.Windows;
-using OpenTK.Graphics.ES30;
-using Windows.UI.Core;
+using System.Runtime.InteropServices;
 #endif
 
 namespace MeinKraft.Maui.Services;
@@ -103,10 +97,6 @@ public sealed partial class MauiGameWindowService : IGameWindowService
     public void Start()
     {
     }
-
-    private readonly List<Action<float>> _newFrameHandlers = [];
-    public void AddOnNewFrame(Action<float> handler) => _newFrameHandlers.Add(handler);
-    public void RemoveOnNewFrame(Action<float> handler) => _newFrameHandlers.Remove(handler);
 
     // ── IGameWindowService — input ────────────────────────────────────────────
 
@@ -218,8 +208,8 @@ public sealed partial class MauiGameWindowService : IGameWindowService
         => _displayService.GetDisplayResolutionDefault();
 
     public string KeyName(int key)
-        => Enum.IsDefined(typeof(OpenTK.Windowing.GraphicsLibraryFramework.Keys), key)
-            ? Enum.GetName(typeof(OpenTK.Windowing.GraphicsLibraryFramework.Keys), key)!
+        => Enum.IsDefined(typeof(Keys), key)
+            ? Enum.GetName(typeof(Keys), key)!
             : key.ToString();
 
     // ── Misc ──────────────────────────────────────────────────────────────────
@@ -228,7 +218,7 @@ public sealed partial class MauiGameWindowService : IGameWindowService
     public string GameSavePath => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
     public string GameLogsPath => Path.Combine(StoragePath, "Logs");
 
-    public INetworkService NetworkService { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public INetworkService NetworkService { get; set; }
     public GameWindow Window { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     public string GetGameVersion() => GameVersion.Version;

@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<!--
+﻿<!--
     GameView.xaml
     ═════════════
     Two-layer host:
@@ -25,10 +24,10 @@
 
         <!-- ── Layer 0: Game canvas ──────────────────────────────────────── -->
         <skia:SKGLView x:Name="GlView"
+                       IsVisible="True"
                        HorizontalOptions="Fill"
                        VerticalOptions="Fill"
-                       HasRenderLoop="False"
-                       PaintSurface="GlView_PaintSurface" />
+                       HasRenderLoop="False" />
 
         <!-- ── Layer 1: Pause / options overlay ─────────────────────────── -->
         <!--
@@ -36,10 +35,16 @@
             While IsVisible=True the overlay captures all pointer/touch input;
             the game canvas below receives nothing.
         -->
+
+        <views:SetupProgressView x:Name="ProgressView"
+                                 HorizontalOptions="Fill"
+                                 VerticalOptions="Fill"/>
+        
         <views:OverlayMenuView x:Name="OverlayMenu"
                                IsVisible="False"
                                HorizontalOptions="Fill"
                                VerticalOptions="Fill" />
+        
 
     </Grid>
 

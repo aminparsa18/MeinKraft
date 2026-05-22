@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MeinKraft.Core\MeinKraft.Core.csproj" />
+    <ProjectReference Include="..\MeinKraft.Core\MeinKraft.Client.csproj" />
   </ItemGroup>
 
 </Project>

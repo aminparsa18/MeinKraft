@@ -246,30 +246,3 @@ public sealed class ChunkLightingDispatcher : IChunkWorkDispatcher
             Priority: priority), ct);
     }
 }
-
-/// <summary>
-/// Enqueued by the main thread (ModDrawTerrain) when a chunk is dirty.
-/// The ChunkLightingWorker converts this into a TessellationChunkWorkItem
-/// after computing shadows.
-/// </summary>
-public record LightingChunkWorkItem(
-    int ChunkX,
-    int ChunkY,
-    int ChunkZ,
-    Chunk Chunk,
-    TaskCompletionSource? Completion = null,
-    int Priority = 0
-) : ChunkWorkItem(ChunkX, ChunkY, ChunkZ, ChunkWorkType.RelightFull, Completion, Priority);
-
-/// <summary>
-/// Partial relight — LightBetweenChunks only (BaseLight already updated by IncrementalLightBFS).
-/// Used for runtime block changes that do not affect the sunlight heightmap.
-/// </summary>
-public record RelightBetweenChunksWorkItem(
-    int ChunkX,
-    int ChunkY,
-    int ChunkZ,
-    Chunk? Chunk = null,
-    TaskCompletionSource? Completion = null,
-    int Priority = 0
-) : ChunkWorkItem(ChunkX, ChunkY, ChunkZ, ChunkWorkType.RelightBetweenChunks, Completion, Priority);

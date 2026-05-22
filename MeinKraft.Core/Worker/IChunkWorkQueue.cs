@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace MeinKraft.Worker;
+﻿namespace MeinKraft.Worker;
 
 /// <summary>
 /// Enqueues chunk work items. Inject this anywhere that needs to schedule chunk work

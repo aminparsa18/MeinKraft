@@ -1,9 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
-using System;
 using System.Collections.Concurrent;
-using System.Threading;
 using System.Threading.Channels;
-using System.Threading.Tasks;
 
 namespace MeinKraft.Worker;
 
@@ -13,8 +10,7 @@ namespace MeinKraft.Worker;
 /// </summary>
 public class ChunkWorkerPool : BackgroundService, IChunkWorkQueue
 {
-    public static int DefaultWorkerCount => 4;
-        //Math.Max(1, Environment.ProcessorCount - 1);
+    public static int DefaultWorkerCount => Math.Max(1, Environment.ProcessorCount - 1);
 
     private readonly ConcurrentQueue<TerrainRendererRedraw> _results = new();
     private readonly Channel<ChunkWorkItem> _channel;

@@ -2,20 +2,7 @@
 using MeinKraft.Worker;
 using OpenTK.Graphics.ES30;
 using SkiaSharp.Views.Maui;
-using System.Runtime.InteropServices;
-using OpenTK;
-using OpenTK.Platform.Windows;
-
-
-#if WINDOWS
-using Application = Microsoft.Maui.Controls.Application;
-using Microsoft.UI.Xaml.Input;
-using OpenTK.Windowing.GraphicsLibraryFramework;
-using Microsoft.UI.Input;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Windowing;
-using Microsoft.UI;
-#endif
+using MessagePipe;
 
 namespace MeinKraft.Maui.Views;
 
@@ -26,56 +13,29 @@ public partial class GameView : ContentPage, IDisposable
     private DateTime _lastFrame = DateTime.UtcNow;
 
     private readonly IGame _game;
-    private readonly ISinglePlayerService _singlePlayerService;
+    private readonly IGameLogger _gameLogger;
     private readonly IOpenGlService _openGlService;
     private readonly IGameWindowService _gameWindowService;
     private readonly IAssetManager _assetManager;
-    private readonly IDummyNetwork _dummyNetwork;
-    private readonly WorkerHost _workerHost;
-    private readonly ServerSystemBootstraper _serverSystemBootstraper;
+    private readonly IDisposable _subscription;
 
-#if WINDOWS
-    [DllImport("libEGL.dll")]
-    private static extern IntPtr eglGetProcAddress(string procName);
-
-    private class AngleBindingsContext : OpenTK.IBindingsContext
-    {
-        public IntPtr GetProcAddress(string procName) => eglGetProcAddress(procName);
-    }
-
-#elif ANDROID
-    public class AndroidBindingsContext : IBindingsContext
-    {
-        private readonly IntPtr _libHandle;
-
-        public AndroidBindingsContext()
-        {
-            _libHandle = NativeLibrary.Load("libGLESv2.so");
-        }
-
-        public IntPtr GetProcAddress(string procName)
-        {
-            if (NativeLibrary.TryGetExport(_libHandle, procName, out IntPtr ptr))
-                return ptr;
-
-            return IntPtr.Zero;
-        }
-    }
-#endif
+    private readonly ClientWorkerHost _workerHost;
 
     public GameView(IOpenGlService openGlService, IGameWindowService gameWindowService, IAssetManager assetManager,
-        IGame game, ISinglePlayerService singlePlayerService, IDummyNetwork dummyNetwork, ITerrainChunkTesselator terrainChunkTesselator,
-        WorkerHost workerHost, ServerSystemBootstraper serverSystemBootstraper)
+        IGameLogger gameLogger, IGame game, ITerrainChunkTesselator terrainChunkTesselator, ClientWorkerHost workerHost,
+        ISubscriber<SetupProgressEventArgs> subscriber)
     {
         InitializeComponent();
         _openGlService = openGlService;
         _gameWindowService = gameWindowService;
         _assetManager = assetManager;
         _game = game;
-        _singlePlayerService = singlePlayerService;
+        _gameLogger = gameLogger;
         _workerHost = workerHost;
-        _dummyNetwork = dummyNetwork;
-        _serverSystemBootstraper = serverSystemBootstraper;
+
+        var bag = DisposableBag.CreateBuilder();
+        subscriber.Subscribe(SetupProgressUpdated).AddTo(bag);
+        _subscription = bag.Build();
 
         // Inject game services into the overlay so it can apply options directly.
         // Must happen after InitializeComponent() so OverlayMenu is already created.
@@ -86,128 +46,51 @@ public partial class GameView : ContentPage, IDisposable
         // require cursor and game-state changes, plus the platform fullscreen call.
         OverlayMenu.ReturnToGameRequested += (_, _) => HideOverlay();
         OverlayMenu.ExitToMenuRequested += OnExitToMenuRequested;
-        OverlayMenu.FullscreenChanged += OnFullscreenChanged;
     }
 
-#if WINDOWS
-    protected override void OnHandlerChanged()
+    private void SetupProgressUpdated(SetupProgressEventArgs e)
     {
-        base.OnHandlerChanged();
-        AttachWindowKeyEvents();
-        ((MauiGameWindowService)_gameWindowService).CaptureCursor();
-    }
-
-    public void AttachWindowKeyEvents()
-    {
-        Microsoft.Maui.Controls.Window? mauiWindow = Application.Current?.Windows.FirstOrDefault();
-        Microsoft.UI.Xaml.Window? nativeWindow = mauiWindow?.Handler?.PlatformView
-                           as Microsoft.UI.Xaml.Window;
-
-        if (nativeWindow?.Content is UIElement root)
+        if (e.Progress == 100)
         {
-            root.AddHandler(
-                UIElement.KeyDownEvent,
-                new KeyEventHandler((s, args) =>
-                {
-                    KeyEventArgs keyEvent = WinKeyMapper.ToKeyEventArgs(args);
-                    if (keyEvent.KeyChar == (int)Keys.Escape && _game.GuiState == GameState.Normal && !OverlayMenu.IsVisible)
-                    {
-                        ((MauiGameWindowService)_gameWindowService).ReleaseCursor();
-                        ShowPauseMenu();
-                    }
-                    else if (keyEvent.KeyChar == (int)Keys.Escape && _game.GuiState == GameState.Inventory)
-                    {
-                        ((MauiGameWindowService)_gameWindowService).CaptureCursor();
-                    }
-                    else if (keyEvent.KeyChar == (int)Keys.B && _game.GuiState == GameState.Normal)
-                    {
-                        ((MauiGameWindowService)_gameWindowService).ReleaseCursor();
-                    }
-                    else if (keyEvent.KeyChar == (int)Keys.Escape && OverlayMenu.IsVisible)
-                    {
-                        HideOverlay();
-                        ((MauiGameWindowService)_gameWindowService).CaptureCursor();
-                    }
-                    _game.KeyDown(keyEvent);
-                    _game.KeyPress(keyEvent);
-                    args.Handled = keyEvent.Handled;
-                }),
-                handledEventsToo: true
-            );
-
-            root.AddHandler(
-                UIElement.KeyUpEvent,
-                new KeyEventHandler((s, args) =>
-                {
-                    KeyEventArgs keyEvent = WinKeyMapper.ToKeyEventArgs(args);
-                    _game.KeyUp(keyEvent);
-                    args.Handled = keyEvent.Handled;
-                }),
-                handledEventsToo: true
-            );
-
-            // Must set these BEFORE trying to focus
-            if (root is Microsoft.UI.Xaml.Controls.Control control)
-            {
-                control.IsTabStop = true;
-                control.AllowFocusOnInteraction = true;
-            }
-
-            root.Tapped += (s, _) => root.Focus(FocusState.Pointer);  // focus on tap
-            root.Focus(FocusState.Programmatic);                       // focus immediately
-
-            root.AddHandler(UIElement.PointerPressedEvent,
-                new PointerEventHandler((s, args) =>
-                {
-                    UIElement? glNative = GlView.Handler?.PlatformView as UIElement;
-                    PointerPoint pt = args.GetCurrentPoint(glNative);
-                    _game.MouseDown(WinMouseMapper.ToMouseDownEventArgs(pt));
-                }),
-                handledEventsToo: true);
-
-            root.AddHandler(UIElement.PointerReleasedEvent,
-                new PointerEventHandler((s, args) =>
-                {
-                    UIElement? glNative = GlView.Handler?.PlatformView as UIElement;
-                    PointerPoint pt = args.GetCurrentPoint(glNative);
-                    _game.MouseUp(WinMouseMapper.ToMouseUpEventArgs(pt));
-                }),
-                handledEventsToo: true);
-
-            root.AddHandler(UIElement.PointerWheelChangedEvent,
-                new PointerEventHandler((s, args) =>
-                {
-                    UIElement? glNative = GlView.Handler?.PlatformView as UIElement;
-                    PointerPoint pt = args.GetCurrentPoint(glNative);
-                    _game.MouseWheelChanged(WinMouseMapper.ToMouseWheelEventArgs(pt));
-                }),
-                handledEventsToo: true);
+            ProgressView.IsVisible = false;
+            return;
         }
+        ProgressView.UpdateProgress(e);
     }
-#endif
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
 
         _gameLoopTimer = Dispatcher.CreateTimer();
-        _gameLoopTimer.Interval = TimeSpan.FromMilliseconds(16); // ~60 fps
+        _gameLoopTimer.Interval = TimeSpan.FromMilliseconds(8); // ~60 fps
         _gameLoopTimer.Tick += (_, _) =>
         {
             GlView.InvalidateSurface();
 #if WINDOWS
             if (_gameWindowService.Focused() && _game.GuiState == GameState.Normal)
+            {
                 ((MauiGameWindowService)_gameWindowService).TrapCursorInCenter();
+            }
 #endif
         };
         _gameLoopTimer.Start();
+        ProgressView.UpdateProgress(new() { Title = "Loading Assets...", Progress = 0 });
+        await _assetManager.LoadAssetsAsync();
+        try
+        {
+            await Connect();
+        }
+        catch (Exception ex)
+        {
+            MainThread.BeginInvokeOnMainThread(() => throw ex);
+            return;
+        }
 
-        _assetManager.LoadAssets();
-
-        GlView.Focus();
+        ProgressView.UpdateProgress(new() { Title = "Attaching OpenGl Surface...", Progress = 0 });
         ((MauiGameWindowService)_gameWindowService).Attach(GlView);
 
-        _gameWindowService.AddOnNewFrame(Draw);
+        GlView.PaintSurface += GlView_PaintSurface;
 
 #if WINDOWS
         _gameWindowService.RequestMousePointerLock();
@@ -221,35 +104,31 @@ public partial class GameView : ContentPage, IDisposable
         svc.RawMouseDelta += OnRawMouseDelta;
 #endif
         _game.IsSinglePlayer = true;
-
-        Connect();
     }
 
-    private void Connect()
+    private async Task Connect()
     {
-        if (true) //single player
+        // Start simulation loop + chunk workers + periodic tasks.
+        // WorkerHost sets SinglePlayerServerLoaded = true once everything is live.
+        // Fire-and-forget is fine — startup is fast, socket is already wired above.
+        ProgressView.UpdateProgress(new() { Title = "Starting Game Engine...", Progress = 0 });
+        _ = _workerHost.StartAsync();
+
+        int port = Microsoft.Maui.Storage.Preferences.Get("session_port", 0);
+        string username = Microsoft.Maui.Storage.Preferences.Get("username", "Player");
+        string apiKey = Microsoft.Maui.Storage.Preferences.Get("api_key", string.Empty);
+        string serverIp = Microsoft.Maui.Storage.Preferences.Get("server_ip", "127.0.0.1");
+
+        _game.NetClient = new EnetNetClient(new NetworkService(_gameLogger));
+        _game.ConnectData = new ConnectionData
         {
-            IDummyNetwork network = _singlePlayerService.SinglePlayerServerNetwork;
-
-            // Wire the server socket BEFORE starting workers so the first
-            // simulation tick already has a valid socket to drain.
-            Server server = _serverSystemBootstraper.Server;
-            server.MainSockets[0] = new DummyNetServer(_dummyNetwork);
-
-            // Start simulation loop + chunk workers + periodic tasks.
-            // WorkerHost sets SinglePlayerServerLoaded = true once everything is live.
-            // Fire-and-forget is fine — startup is fast, socket is already wired above.
-            _ = _workerHost.StartAsync();
-
-            _game.NetClient = new DummyNetClient(network);
-            _game.ConnectData = new ConnectionData { Username = "Local" };
-        }
-        //else
-        //{
-        //    game.ConnectData = connectData;
-        //    game.NetClient = CreateNetClient()
-        //        ?? throw new InvalidOperationException("No network transport available.");
-        //}
+            Ip = serverIp,
+            Port = port,
+            Username = username,
+            Auth = apiKey,
+            ServerPassword = string.Empty,
+            IsServerPasswordProtected = false,
+        };
     }
 
     protected override void OnDisappearing()
@@ -273,26 +152,39 @@ public partial class GameView : ContentPage, IDisposable
 #endif
     }
 
-    private void GlView_PaintSurface(object sender, SKPaintGLSurfaceEventArgs e)
+    private void GlView_PaintSurface(object? sender, SKPaintGLSurfaceEventArgs e)
     {
-        if (!_glInitialized)
+        try
         {
+            if (!_glInitialized)
+            {
 #if WINDOWS
-            GL.LoadBindings(new AngleBindingsContext());
+                GL.LoadBindings(new AngleBindingsContext());
 #elif ANDROID
             GL.LoadBindings(new AndroidBindingsContext());
 #endif
-            InitGL();
-            _glInitialized = true;
-            _game.Start();
+                ProgressView.UpdateProgress(new() { Title = "Initialising Shader...", Progress = 0 });
+                InitGL();
+                _glInitialized = true;
+                _game.Start();
+            }
+
+            // Compute delta time
+            DateTime now = DateTime.UtcNow;
+            float dt = (float)(now - _lastFrame).TotalSeconds;
+            _lastFrame = now;
+
+            Draw(dt);
         }
-
-        // Compute delta time
-        DateTime now = DateTime.UtcNow;
-        float dt = (float)(now - _lastFrame).TotalSeconds;
-        _lastFrame = now;
-
-        Draw(dt);
+        catch (Exception ex)
+        {
+            // Replace with your actual logger
+            System.Diagnostics.Debug.WriteLine($"[FATAL] PaintSurface crashed: {ex}");
+            File.AppendAllText(
+                Path.Combine(FileSystem.CacheDirectory, "crash.txt"),
+                $"{DateTime.UtcNow}: {ex}\n");
+            throw; // re-throw so you still see it's fatal
+        }
     }
 
     private void InitGL()
@@ -372,102 +264,8 @@ public partial class GameView : ContentPage, IDisposable
         await Shell.Current.GoToAsync("//MainMenuView");
     }
 
-    /// <summary>
-    /// Uses the AppWindow / OverlappedPresenter API — the only reliable way to
-    /// toggle borderless fullscreen in a MAUI WinUI3 app.
-    /// </summary>
-    private void OnFullscreenChanged(object? sender, bool fullscreen)
+    public void Dispose()
     {
-#if WINDOWS
-        MauiWinUIWindow? window = GetParentWindow().Handler.PlatformView as MauiWinUIWindow;
-        AppWindow appWindow = GetAppWindow(window);
-
-        if (fullscreen)
-        {
-            appWindow.SetPresenter(Microsoft.UI.Windowing.AppWindowPresenterKind.FullScreen);
-        }
-        else
-        {
-            appWindow.SetPresenter(Microsoft.UI.Windowing.AppWindowPresenterKind.Default);
-        }
-#endif
-    }
-
-#if WINDOWS
-    private static Microsoft.UI.Windowing.AppWindow GetAppWindow(MauiWinUIWindow? window)
-    {
-        var handle = WinRT.Interop.WindowNative.GetWindowHandle(window);
-        WindowId id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
-        return Microsoft.UI.Windowing.AppWindow.GetFromWindowId(id);
-    }
-
-    private void OnRawMouseDelta(int dx, int dy)
-    {
-        MouseEventArgs emulated = new MouseEventArgs
-        {
-            MovementX = dx,
-            MovementY = dy,
-            Emulated = true
-        };
-        _game.MouseMove(emulated);
-    }
-
-    public void Dispose() => ((MauiGameWindowService)_gameWindowService).ReleaseCursor();
-
-#endif
-}
-
-#if WINDOWS
-public static class WinMouseMapper
-{
-    public static MouseEventArgs ToMouseDownEventArgs(PointerPoint point)
-    {
-        return new MouseEventArgs
-        {
-            X = (int)point.Position.X,
-            Y = (int)point.Position.Y,
-            Button = MapPressedButton(point.Properties)
-        };
-    }
-
-    public static MouseEventArgs ToMouseUpEventArgs(PointerPoint point)
-    {
-        return new MouseEventArgs
-        {
-            X = (int)point.Position.X,
-            Y = (int)point.Position.Y,
-            Button = MapReleasedButton(point.Properties)
-        };
-    }
-
-    public static float ToMouseWheelEventArgs(PointerPoint point)
-    {
-        return point.Properties.IsHorizontalMouseWheel
-            ? 0f
-            : point.Properties.MouseWheelDelta / 120f;
-    }
-
-    private static int MapPressedButton(PointerPointProperties props)
-    {
-        if (props.IsLeftButtonPressed) return (int)MouseButton.Left;
-        if (props.IsRightButtonPressed) return (int)MouseButton.Right;
-        if (props.IsMiddleButtonPressed) return (int)MouseButton.Middle;
-        if (props.IsXButton1Pressed) return (int)MouseButton.Button4;
-        if (props.IsXButton2Pressed) return (int)MouseButton.Button5;
-        return -1;
-    }
-
-    private static int MapReleasedButton(PointerPointProperties props)
-    {
-        return props.PointerUpdateKind switch
-        {
-            PointerUpdateKind.LeftButtonReleased => (int)MouseButton.Left,
-            PointerUpdateKind.RightButtonReleased => (int)MouseButton.Right,
-            PointerUpdateKind.MiddleButtonReleased => (int)MouseButton.Middle,
-            PointerUpdateKind.XButton1Released => (int)MouseButton.Button4,
-            PointerUpdateKind.XButton2Released => (int)MouseButton.Button5,
-            _ => -1
-        };
+        _subscription.Dispose();
     }
 }
-#endif

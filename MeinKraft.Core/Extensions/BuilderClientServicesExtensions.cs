@@ -12,7 +12,6 @@ public static class BuilderClientServicesExtensions
         services.AddSingleton<IGameExitService, GameExitService>();
      //   services.AddSingleton<IGameWindowService, GameWindowService>();
         services.AddSingleton<ICameraService, CameraService>();
-      //  services.AddSingleton<IAudioService, AudioService>();
         services.AddSingleton<IPreferences, Preferences>();
         services.AddSingleton<IOpenGlService, OpenGlService>();
         services.AddSingleton<IFrustumCulling, FrustumCulling>();

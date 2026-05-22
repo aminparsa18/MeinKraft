@@ -1,0 +1,28 @@
+[
+  {
+    "Name": "Client + Server (Debug)",
+    "Projects": [
+      {
+        "Path": "MeinKraft.Server\\MeinKraft.Server.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "MeinKraft.Maui\\MeinKraft.Maui.csproj",
+        "Action": "Start"
+      }
+    ]
+  },
+  {
+    "Name": "Client + Server (Release)",
+    "Projects": [
+      {
+        "Path": "MeinKraft.Server\\MeinKraft.Server.csproj",
+        "Action": "StartWithoutDebugging"
+      },
+      {
+        "Path": "MeinKraft.Maui\\MeinKraft.Maui.csproj",
+        "Action": "StartWithoutDebugging"
+      }
+    ]
+  }
+]

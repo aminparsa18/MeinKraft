@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MeinKraft.Maui.Views.LoginView"
+             Shell.NavBarIsVisible="False"
+             Title="LoginView">
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- Background screenshot / world render -->
+        <Image Source="background.png"
+         Aspect="AspectFill"
+         HorizontalOptions="Fill"
+         VerticalOptions="Fill" />
+
+        <!-- Darkening overlay — denser at bottom to ground the panel -->
+        <BoxView HorizontalOptions="Fill"
+           VerticalOptions="Fill">
+            <BoxView.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#55000000" Offset="0.0" />
+                    <GradientStop Color="#cc000000" Offset="1.0" />
+                </LinearGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+        
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout
+                Padding="28,60,28,32"
+                Spacing="0"
+                VerticalOptions="Center">
+
+                <!-- ── Title block ───────────────────────────────────────────── -->
+
+                <!-- "MEIN" in grass green, pixel font -->
+                <Label Text="MEIN"
+         FontFamily="PressStart2PRegular"
+         FontSize="42"
+         TextColor="{StaticResource GrassGreen}"
+         HorizontalOptions="Center"
+         CharacterSpacing="6">
+                    <Label.Shadow>
+                        <Shadow Brush="{StaticResource StoneEdgeBottom}"
+                  Offset="4,4" Radius="0" Opacity="1" />
+                    </Label.Shadow>
+                </Label>
+
+                <!-- "KRAFT" in stone white, slightly smaller, offset right for asymmetry -->
+                <Label Text="KRAFT"
+         FontFamily="PressStart2PRegular"
+         FontSize="28"
+         TextColor="{StaticResource TextWhite}"
+         HorizontalOptions="Center"
+         Margin="32,0,0,0"
+         CharacterSpacing="8">
+                    <Label.Shadow>
+                        <Shadow Brush="{StaticResource StoneEdgeBottom}"
+                  Offset="3,3" Radius="0" Opacity="1" />
+                    </Label.Shadow>
+                </Label>
+
+                <!-- Grass-green divider -->
+                <BoxView Style="{StaticResource Divider}" Margin="0,18,0,28" />
+
+
+                <!-- Card -->
+                <Border
+                    Padding="48"
+                    BackgroundColor="#1a1a1a"
+                    Stroke="#2a2a2a"
+                    HorizontalOptions="Center"
+                    Margin="24"
+                    StrokeShape="Rectangle"
+                    StrokeThickness="2">
+                    <VerticalStackLayout Spacing="16">
+
+                        <!-- Username -->
+                        <VerticalStackLayout Spacing="12">
+                            <Label
+                                FontFamily="PressStart2PRegular"
+                                FontSize="10"
+                                Text="YOUR NAME"
+                                TextColor="#444444"
+                                CharacterSpacing="3" />
+                            <Border
+                                BackgroundColor="#141414"
+                                Stroke="#2a2a2a"
+                                StrokeShape="Rectangle"
+                                StrokeThickness="2">
+                                <Entry
+                                    x:Name="UsernameEntry"
+                                    BackgroundColor="Transparent"
+                                    FontFamily="PressStart2PRegular"
+                                    FontSize="12"
+                                    Placeholder="pick something legendary"
+                                    PlaceholderColor="#2e2e2e"
+                                    TextColor="#e0e0e0"
+                                    ReturnType="Done" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- API Key — hidden by default, revealed for returning players -->
+                        <VerticalStackLayout
+                            x:Name="ApiKeyPanel"
+                            IsVisible="False"
+                            Spacing="6">
+                            <Label
+                                FontFamily="PressStart2PRegular"
+                                FontSize="10"
+                                Text="API KEY"
+                                TextColor="#444444"
+                                CharacterSpacing="3" />
+                            <Border
+                                BackgroundColor="#141414"
+                                Stroke="#2a2a2a"
+                                StrokeShape="Rectangle"
+                                StrokeThickness="2">
+                                <Entry
+                                    x:Name="ApiKeyEntry"
+                                    BackgroundColor="Transparent"
+                                    FontFamily="PressStart2PRegular"
+                                    FontSize="12"
+                                    IsPassword="True"
+                                    Placeholder="paste your key here"
+                                    PlaceholderColor="#2e2e2e"
+                                    TextColor="#7ec870"
+                                    ReturnType="Done" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Key shown after fresh registration -->
+                        <VerticalStackLayout
+                            x:Name="KeyResultPanel"
+                            IsVisible="False"
+                            Spacing="8">
+                            <Label
+                                FontFamily="PressStart2PRegular"
+                                FontSize="10"
+                                HorizontalOptions="Center"
+                                Text="YOUR KEY — SAVE IT SOMEWHERE SAFE"
+                                TextColor="#e8a838"
+                                CharacterSpacing="1" />
+                            <Border
+                                BackgroundColor="#0d1a0d"
+                                Stroke="#3a6e32"
+                                StrokeShape="Rectangle"
+                                StrokeThickness="2">
+                                <Label
+                                    x:Name="ApiKeyResultLabel"
+                                    Padding="14,12"
+                                    FontFamily="PressStart2PRegular"
+                                    FontSize="12"
+                                    LineBreakMode="CharacterWrap"
+                                    TextColor="#7ec870">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnCopyKeyTapped" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Border>
+                            <Label
+                                FontFamily="PressStart2PRegular"
+                                FontSize="10"
+                                HorizontalOptions="Center"
+                                Text="tap to copy"
+                                TextColor="#3a3a3a" />
+                        </VerticalStackLayout>
+
+                        <!-- Status message -->
+                        <Label
+                            x:Name="StatusLabel"
+                            FontFamily="PressStart2PRegular"
+                            FontSize="11"
+                            HorizontalOptions="Center"
+                            IsVisible="False"
+                            TextColor="#e8a838" />
+
+                        <!-- Primary action -->
+                        <Button
+                            x:Name="ActionButton"
+                            Margin="0,4,0,0"
+                            Clicked="OnActionClicked"
+                            Style="{StaticResource VoxelButton}"
+                            Text="CREATE ACCOUNT" />
+
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Footer tap to reveal returning player mode -->
+        <VerticalStackLayout
+            Grid.Row="1"
+            Padding="0,0,0,28"
+            Spacing="0">
+
+            <BoxView
+                Margin="28,0,28,16"
+                BackgroundColor="#1e1e1e"
+                HeightRequest="1" />
+
+            <Label
+                x:Name="FooterLabel"
+                FontFamily="PressStart2PRegular"
+                FontSize="12"
+                HorizontalOptions="Center"
+                Text="Already a player? Access your worlds!"
+                TextColor="#5a9e4a">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnFooterTapped" />
+                </Label.GestureRecognizers>
+            </Label>
+
+        </VerticalStackLayout>
+
+    </Grid>
+</ContentPage>

@@ -7,6 +7,10 @@
     FlyoutBehavior="Disabled">
 
     <ShellContent
+        ContentTemplate="{DataTemplate local:LoginView}"
+        Route="LoginView" />
+    
+    <ShellContent
         Title="Menu"
         ContentTemplate="{DataTemplate local:MainMenuView}"
         Route="MainMenuView" />

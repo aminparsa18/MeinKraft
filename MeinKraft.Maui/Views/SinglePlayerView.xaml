@@ -7,46 +7,16 @@
 
     <ContentPage.Resources>
         <ResourceDictionary>
-
-            <Color x:Key="StoneEdgeTop">#aaaaaa</Color>
-            <Color x:Key="StoneEdgeBottom">#2a2a2a</Color>
-            <Color x:Key="GrassGreen">#5d9e29</Color>
-            <Color x:Key="TextWhite">#f0ece0</Color>
             <Color x:Key="TextDim">#aaaaaa</Color>
-
-            <!-- Shared bevel frame -->
-            <Style x:Key="VoxelButtonBevel" TargetType="Border">
-                <Setter Property="StrokeThickness"   Value="0" />
-                <Setter Property="Padding"           Value="3" />
-                <Setter Property="HorizontalOptions" Value="Center" />
-                <Setter Property="Shadow">
-                    <Setter.Value>
-                        <Shadow Brush="#000000" Offset="4,4" Radius="0" Opacity="0.85" />
-                    </Setter.Value>
-                </Setter>
+            <Style x:Key="VoxelButtonGreen" BasedOn="{StaticResource VoxelButton}" TargetType="Button">
                 <Setter Property="Background">
                     <Setter.Value>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Color="{StaticResource StoneEdgeTop}"    Offset="0.0" />
-                            <GradientStop Color="{StaticResource StoneEdgeBottom}" Offset="1.0" />
+                            <GradientStop Color="#6ab82e" Offset="0.0"  />
+                            <GradientStop Color="#4a8a1e" Offset="0.45" />
+                            <GradientStop Color="#3a6a14" Offset="0.55" />
+                            <GradientStop Color="#244a0a" Offset="1.0"  />
                         </LinearGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <!-- Action button (Back / New World) -->
-            <Style x:Key="VoxelButton" TargetType="Button">
-                <Setter Property="FontFamily"        Value="PressStart2PRegular" />
-                <Setter Property="FontSize"          Value="10" />
-                <Setter Property="TextColor"         Value="{StaticResource TextWhite}" />
-                <Setter Property="WidthRequest"      Value="260" />
-                <Setter Property="HeightRequest"     Value="44" />
-                <Setter Property="CornerRadius"      Value="0" />
-                <Setter Property="BorderWidth"       Value="0" />
-                <Setter Property="Padding"           Value="0" />
-                <Setter Property="Shadow">
-                    <Setter.Value>
-                        <Shadow Brush="#000000" Offset="3,3" Radius="0" Opacity="0.9" />
                     </Setter.Value>
                 </Setter>
 
@@ -55,26 +25,21 @@
                         <VisualStateGroupList>
                             <VisualStateGroup x:Name="CommonStates">
 
+                                <!-- Normal — base stone gradient (mirrors Background above) -->
                                 <VisualState x:Name="Normal">
                                     <VisualState.Setters>
                                         <Setter Property="TextColor" Value="{StaticResource TextWhite}" />
+                                        <Setter Property="Background">
+                                            <Setter.Value>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                    <GradientStop Color="#6ab82e" Offset="0.0" />
+                                                    <GradientStop Color="#4a8a1e" Offset="0.45" />
+                                                    <GradientStop Color="#3a6a14" Offset="0.55" />
+                                                    <GradientStop Color="#244a0a" Offset="1.0"  />
+                                                </LinearGradientBrush>
+                                            </Setter.Value>
+                                        </Setter>
                                         <Setter Property="Scale" Value="1.0" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                                
-                                <!-- PointerOver — brighter stone, yellow text (classic Minecraft hover) -->
-                                <VisualState x:Name="PointerOver">
-                                    <VisualState.Setters>
-                                        <Setter Property="TextColor" Value="#ffee55" />
-                                        <Setter Property="Scale" Value="1.03" />
-                                    </VisualState.Setters>
-                                </VisualState>
-
-                                <!-- Pressed — inverted bevel, slight scale-down for tactile feel -->
-                                <VisualState x:Name="Pressed">
-                                    <VisualState.Setters>
-                                        <Setter Property="TextColor" Value="#ccbb33" />
-                                        <Setter Property="Scale" Value="0.97" />
                                     </VisualState.Setters>
                                 </VisualState>
 
@@ -82,59 +47,6 @@
                                     <VisualState.Setters>
                                         <Setter Property="TextColor" Value="#555555" />
                                         <Setter Property="Opacity"   Value="0.4" />
-                                    </VisualState.Setters>
-                                </VisualState>
-
-                            </VisualStateGroup>
-                        </VisualStateGroupList>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <!-- Grass-green fading divider -->
-            <Style x:Key="Divider" TargetType="BoxView">
-                <Setter Property="HeightRequest"     Value="2" />
-                <Setter Property="HorizontalOptions" Value="Fill" />
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="Transparent"                Offset="0.0" />
-                            <GradientStop Color="{StaticResource GrassGreen}" Offset="0.5" />
-                            <GradientStop Color="Transparent"                Offset="1.0" />
-                        </LinearGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style x:Key="SlotBorder" TargetType="Border">
-                <Setter Property="VisualStateManager.VisualStateGroups">
-                    <Setter.Value>
-                        <VisualStateGroupList>
-                            <VisualStateGroup x:Name="CommonStates">
-
-                                <VisualState x:Name="Normal">
-                                    <VisualState.Setters>
-                                        <Setter Property="Scale" Value="1.0" />
-                                    </VisualState.Setters>
-                                </VisualState>
-
-                                <!-- PointerOver — brighter stone, yellow text (classic Minecraft hover) -->
-                                <VisualState x:Name="PointerOver">
-                                    <VisualState.Setters>
-                                        <Setter Property="Scale" Value="1.03" />
-                                    </VisualState.Setters>
-                                </VisualState>
-
-                                <!-- Pressed — inverted bevel, slight scale-down for tactile feel -->
-                                <VisualState x:Name="Pressed">
-                                    <VisualState.Setters>
-                                        <Setter Property="Scale" Value="0.97" />
-                                    </VisualState.Setters>
-                                </VisualState>
-
-                                <VisualState x:Name="Disabled">
-                                    <VisualState.Setters>
-                                        <Setter Property="Opacity" Value="0.4" />
                                     </VisualState.Setters>
                                 </VisualState>
 
@@ -163,7 +75,7 @@
             </BoxView.Background>
         </BoxView>
 
-        <Grid RowDefinitions="Auto,Auto,*,Auto"
+        <Grid RowDefinitions="Auto,Auto,*,Auto,Auto"
               Padding="24,32,24,28">
 
             <!-- Title -->
@@ -188,8 +100,26 @@
 
             <BoxView Grid.Row="1" Style="{StaticResource Divider}" Margin="0,14,0,14" />
 
-            <!-- Save slot list -->
+            <!-- World list area -->
             <Grid Grid.Row="2">
+
+                <!-- Loading state -->
+                <VerticalStackLayout x:Name="LoadingState"
+                                     IsVisible="True"
+                                     VerticalOptions="Center"
+                                     HorizontalOptions="Center"
+                                     Spacing="16">
+                    <ActivityIndicator Color="{StaticResource GrassGreen}"
+                                       IsRunning="True"
+                                       WidthRequest="28"
+                                       HeightRequest="28"
+                                       HorizontalOptions="Center" />
+                    <Label Text="loading worlds..."
+                           FontFamily="PressStart2PRegular"
+                           FontSize="6"
+                           TextColor="{StaticResource TextDim}"
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
 
                 <!-- Empty state -->
                 <VerticalStackLayout x:Name="EmptyState"
@@ -209,13 +139,28 @@
                            HorizontalOptions="Center" />
                 </VerticalStackLayout>
 
-                <!--
-                    Each row: bevel Border (fixed) wrapping a face Border (stone gradient).
-                    TapGestureRecognizer on the face triggers slot load.
-                    The delete Button sits in its own column and calls OnDeleteClicked.
-                    Both pass the SaveSlot as CommandParameter via BindingContext.
-                -->
-                <CollectionView x:Name="SaveSlotList"
+                <!-- Error state -->
+                <VerticalStackLayout x:Name="ErrorState"
+                                     IsVisible="False"
+                                     VerticalOptions="Center"
+                                     HorizontalOptions="Center"
+                                     Spacing="16">
+                    <Label x:Name="ErrorLabel"
+                           FontFamily="PressStart2PRegular"
+                           FontSize="7"
+                           TextColor="#cc6666"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center" />
+                    <Border Style="{StaticResource VoxelButtonBevel}">
+                        <Button Style="{StaticResource VoxelButton}"
+                                Text="RETRY"
+                                Clicked="OnRetryClicked" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- World list -->
+                <CollectionView x:Name="WorldList"
+                                IsVisible="False"
                                 SelectionMode="None"
                                 VerticalOptions="Fill">
                     <CollectionView.ItemsLayout>
@@ -224,11 +169,11 @@
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <!-- Bevel frame — never scaled -->
+                            <!-- Bevel frame -->
                             <Border StrokeThickness="0"
                                     Padding="3"
                                     HorizontalOptions="Fill"
-                                    Style="{StaticResource SlotBorder}">
+                                    >
                                 <Border.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                                         <GradientStop Color="{StaticResource StoneEdgeTop}"    Offset="0.0" />
@@ -239,7 +184,7 @@
                                     <Shadow Brush="#000000" Offset="4,4" Radius="0" Opacity="0.8" />
                                 </Border.Shadow>
 
-                                <!-- Face — carries the tap gesture -->
+                                <!-- Face -->
                                 <Border StrokeThickness="0"
                                         HeightRequest="62"
                                         HorizontalOptions="Fill">
@@ -253,7 +198,7 @@
                                     </Border.Background>
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=LoadSlotCommand}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=PlaySlotCommand}"
                                             CommandParameter="{Binding .}" />
                                     </Border.GestureRecognizers>
 
@@ -294,7 +239,7 @@
                                                    TextColor="{StaticResource TextDim}" />
                                         </VerticalStackLayout>
 
-                                        <!-- Delete — plain Button, no bevel needed at this size -->
+                                        <!-- Delete -->
                                         <Button Grid.Column="2"
                                                 Text="✕"
                                                 FontSize="13"
@@ -314,14 +259,24 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
+
             </Grid>
 
-            <!-- Footer: Back (left) | New World (right) -->
-            <Grid Grid.Row="3"
+            <!-- Status label -->
+            <Label Grid.Row="3"
+                   x:Name="StatusLabel"
+                   IsVisible="False"
+                   FontFamily="PressStart2PRegular"
+                   FontSize="6"
+                   HorizontalOptions="Center"
+                   Margin="0,10,0,0"
+                   TextColor="{StaticResource GrassGreen}" />
+
+            <!-- Footer: Back | New World -->
+            <Grid Grid.Row="4"
                   ColumnDefinitions="*,16,*"
                   Margin="0,16,0,0">
 
-                <!-- Back -->
                 <Border Grid.Column="0" Style="{StaticResource VoxelButtonBevel}">
                     <Button Style="{StaticResource VoxelButton}"
                             Text="◀  Back"
@@ -351,18 +306,8 @@
                             <GradientStop Color="#2a4a10" Offset="1.0" />
                         </LinearGradientBrush>
                     </Border.Background>
-                    <Button Style="{StaticResource VoxelButton}"
-                            Text="+ New World"
-                            Clicked="OnNewWorldClicked">
-                        <Button.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                <GradientStop Color="#6ab82e" Offset="0.0"  />
-                                <GradientStop Color="#4a8a1e" Offset="0.45" />
-                                <GradientStop Color="#3a6a14" Offset="0.55" />
-                                <GradientStop Color="#244a0a" Offset="1.0"  />
-                            </LinearGradientBrush>
-                        </Button.Background>
-                    </Button>
+                    <Button Style="{StaticResource VoxelButtonGreen}" Text="+ New World" Clicked="OnNewWorldClicked"/>
+
                 </Border>
 
             </Grid>

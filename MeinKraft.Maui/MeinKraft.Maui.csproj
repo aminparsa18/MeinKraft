@@ -36,7 +36,26 @@
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<SupportedOSPlatformVersion>26</SupportedOSPlatformVersion>
 	</PropertyGroup>
-	
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android|AnyCPU'">
+	  <RunAOTCompilation>False</RunAOTCompilation>
+		<DebugSymbols>true</DebugSymbols>
+		<AndroidIncludeDebugSymbols>true</AndroidIncludeDebugSymbols>
+		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+		<AndroidEnableProfiler>true</AndroidEnableProfiler>
+	</PropertyGroup>
+
+	<ItemGroup Condition="$(TargetFramework.StartsWith('net10.0-android'))">
+		<AndroidNativeLibrary Include="libs\android\arm64-v8a\libenet.so">
+			<Abi>arm64-v8a</Abi>
+		</AndroidNativeLibrary>
+		<AndroidNativeLibrary Include="libs\android\armeabi-v7a\libenet.so">
+			<Abi>armeabi-v7a</Abi>
+		</AndroidNativeLibrary>
+		<AndroidNativeLibrary Include="libs\android\x86_64\libenet.so">
+			<Abi>x86_64</Abi>
+		</AndroidNativeLibrary>
+	</ItemGroup>
+
 	<ItemGroup>
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 		<MauiIcon Include="Resources\AppIcon\appiconfg.svg" />
@@ -61,14 +80,15 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.60" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.8" />
 		<PackageReference Include="Plugin.Maui.Audio" Version="4.0.0" />
+		<PackageReference Include="ENet-CSharp" Version="2.4.8" />
 		<PackageReference Include="Serilog" Version="4.*" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.2" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\MeinKraft.Core\MeinKraft.Core.csproj" />
+	  <ProjectReference Include="..\MeinKraft.Core\MeinKraft.Client.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -78,10 +98,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\LoginView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\MainMenuView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\OverlayMenuView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\SetupProgressView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\SinglePlayerView.xaml">

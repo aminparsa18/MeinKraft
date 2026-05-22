@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace MeinKraft.Worker;
+﻿namespace MeinKraft.Worker;
 
 /// <summary>
 /// Describes a single unit of background chunk work.

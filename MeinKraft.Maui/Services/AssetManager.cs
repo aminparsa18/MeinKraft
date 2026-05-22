@@ -6,48 +6,57 @@
 /// </summary>
 public class AssetManager : IAssetManager
 {
-    private readonly MD5 _md5 = MD5.Create();
+    public List<Asset> Assets => _assets;
+    private readonly List<Asset> _assets = [];
 
-    public List<Asset> Assets { get; set; } = [];
-    public float AssetsLoadProgress { get; set; }
-
-    public void LoadAssets()
+    public async Task LoadAssetsAsync(IProgress<float>? progress = null, CancellationToken ct = default)
     {
-        if (Assets.Count > 0) return;
-
-        // Read manifest — works identically on Windows and Android
-        IEnumerable<string> files = ReadManifest();
-
-        foreach (string filename in files)
+        if (_assets.Count > 0)
         {
-            using Stream stream = FileSystem.OpenAppPackageFileAsync(filename)
-                                            .GetAwaiter().GetResult();
-            using MemoryStream ms = new();
-            stream.CopyTo(ms);
-            byte[] data = ms.ToArray();
+            progress?.Report(1f);
+            return;
+        }
 
-            Assets.Add(new Asset
+        var files = await ReadManifestAsync(ct);
+        var fileList = files.ToList();
+
+        for (int i = 0; i < fileList.Count; i++)
+        {
+            ct.ThrowIfCancellationRequested();
+
+            byte[] data = await LoadFileAsync(fileList[i], ct);
+
+            _assets.Add(new Asset
             {
                 data = data,
                 dataLength = data.Length,
-                name = Path.GetFileName(filename).ToLowerInvariant(), // just filename for lookups
+                name = Path.GetFileName(fileList[i]).ToLowerInvariant(),
                 md5 = ComputeMd5(data),
             });
+
+            progress?.Report((float)(i + 1) / fileList.Count);
         }
-
-        AssetsLoadProgress = 1;
     }
 
-    private static IEnumerable<string> ReadManifest()
+    private static async Task<IEnumerable<string>> ReadManifestAsync(CancellationToken ct)
     {
-        using Stream s = FileSystem.OpenAppPackageFileAsync("assets_manifest.txt")
-                                   .GetAwaiter().GetResult();
+        await using Stream s = await FileSystem.OpenAppPackageFileAsync("assets_manifest.txt");
         using var sr = new StreamReader(s);
-        return sr.ReadToEnd()
-                 .Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
-                 .Select(line => line.Replace('\\', '/'));
+        string content = await sr.ReadToEndAsync(ct);
+
+        return content
+            .Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
+            .Select(line => line.Replace('\\', '/'));
     }
 
-    private string ComputeMd5(byte[] data)
-        => Convert.ToHexString(_md5.ComputeHash(data)).ToLowerInvariant();
+    private static async Task<byte[]> LoadFileAsync(string filename, CancellationToken ct)
+    {
+        await using Stream stream = await FileSystem.OpenAppPackageFileAsync(filename);
+        using MemoryStream ms = new();
+        await stream.CopyToAsync(ms, ct);
+        return ms.ToArray();
+    }
+
+    private static string ComputeMd5(byte[] data)
+        => Convert.ToHexString(MD5.HashData(data)).ToLowerInvariant();
 }

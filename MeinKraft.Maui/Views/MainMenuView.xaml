@@ -5,138 +5,6 @@
              Shell.NavBarIsVisible="False"
              BackgroundColor="#0a0a0a">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-
-            <!-- Palette -->
-            <Color x:Key="StoneLight">#8a8a8a</Color>
-            <Color x:Key="StoneMid">#6b6b6b</Color>
-            <Color x:Key="StoneDark">#3a3a3a</Color>
-            <Color x:Key="StoneEdgeTop">#aaaaaa</Color>
-            <Color x:Key="StoneEdgeBottom">#2a2a2a</Color>
-            <Color x:Key="GrassGreen">#5d9e29</Color>
-            <Color x:Key="GrassHighlight">#7ecf38</Color>
-            <Color x:Key="DirtBrown">#7a4a2a</Color>
-            <Color x:Key="TextWhite">#f0ece0</Color>
-            <Color x:Key="TextShadow">#1a1a1a</Color>
-            <Color x:Key="OverlayDark">#aa000000</Color>
-
-            <!-- Minecraft-style bevelled button -->
-            <Style x:Key="VoxelButton" TargetType="Button">
-                <Setter Property="FontFamily"     Value="PressStart2PRegular" />
-                <Setter Property="FontSize"       Value="11" />
-                <Setter Property="TextColor"      Value="{StaticResource TextWhite}" />
-                <Setter Property="WidthRequest"   Value="300" />
-                <Setter Property="HeightRequest"  Value="48" />
-                <Setter Property="CornerRadius"   Value="0" />
-                <Setter Property="Padding"        Value="0" />
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Color="#9a9a9a" Offset="0.0" />
-                            <GradientStop Color="#6b6b6b" Offset="0.45" />
-                            <GradientStop Color="#595959" Offset="0.55" />
-                            <GradientStop Color="#404040" Offset="1.0" />
-                        </LinearGradientBrush>
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="Shadow">
-                    <Setter.Value>
-                        <Shadow Brush="#000000" Offset="3,3" Radius="0" Opacity="0.9" />
-                    </Setter.Value>
-                </Setter>
-
-                <Setter Property="VisualStateManager.VisualStateGroups">
-                    <Setter.Value>
-                        <VisualStateGroupList>
-                            <VisualStateGroup x:Name="CommonStates">
-
-                                <!-- Normal — base stone gradient (mirrors Background above) -->
-                                <VisualState x:Name="Normal">
-                                    <VisualState.Setters>
-                                        <Setter Property="TextColor" Value="{StaticResource TextWhite}" />
-                                        <Setter Property="Background">
-                                            <Setter.Value>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                    <GradientStop Color="#9a9a9a" Offset="0.0" />
-                                                    <GradientStop Color="#6b6b6b" Offset="0.45" />
-                                                    <GradientStop Color="#595959" Offset="0.55" />
-                                                    <GradientStop Color="#404040" Offset="1.0" />
-                                                </LinearGradientBrush>
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="Scale" Value="1.0" />
-                                    </VisualState.Setters>
-                                </VisualState>
-
-                                <!-- PointerOver — brighter stone, yellow text (classic Minecraft hover) -->
-                                <VisualState x:Name="PointerOver">
-                                    <VisualState.Setters>
-                                        <Setter Property="TextColor" Value="#ffee55" />
-                                        <Setter Property="Background">
-                                            <Setter.Value>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                    <GradientStop Color="#c8c8c8" Offset="0.0" />
-                                                    <GradientStop Color="#9a9a9a" Offset="0.45" />
-                                                    <GradientStop Color="#808080" Offset="0.55" />
-                                                    <GradientStop Color="#606060" Offset="1.0" />
-                                                </LinearGradientBrush>
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="Scale" Value="1.03" />
-                                    </VisualState.Setters>
-                                </VisualState>
-
-                                <!-- Pressed — inverted bevel, slight scale-down for tactile feel -->
-                                <VisualState x:Name="Pressed">
-                                    <VisualState.Setters>
-                                        <Setter Property="TextColor" Value="#ccbb33" />
-                                        <Setter Property="Background">
-                                            <Setter.Value>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                    <GradientStop Color="#383838" Offset="0.0" />
-                                                    <GradientStop Color="#555555" Offset="0.45" />
-                                                    <GradientStop Color="#636363" Offset="0.55" />
-                                                    <GradientStop Color="#888888" Offset="1.0" />
-                                                </LinearGradientBrush>
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="Scale" Value="0.97" />
-                                    </VisualState.Setters>
-                                </VisualState>
-
-                                <VisualState x:Name="Disabled">
-                                    <VisualState.Setters>
-                                        <Setter Property="TextColor" Value="#555555" />
-                                        <Setter Property="Opacity"   Value="0.4" />
-                                    </VisualState.Setters>
-                                </VisualState>
-
-                            </VisualStateGroup>
-                        </VisualStateGroupList>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <!-- Subtle divider line -->
-            <Style x:Key="Divider" TargetType="BoxView">
-                <Setter Property="HeightRequest"      Value="2" />
-                <Setter Property="WidthRequest"       Value="220" />
-                <Setter Property="HorizontalOptions"  Value="Center" />
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="Transparent"               Offset="0.0" />
-                            <GradientStop Color="{StaticResource GrassGreen}" Offset="0.5" />
-                            <GradientStop Color="Transparent"               Offset="1.0" />
-                        </LinearGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-        </ResourceDictionary>
-    </ContentPage.Resources>
-
     <!-- Root: background image with dark overlay -->
     <Grid>
 
@@ -164,7 +32,7 @@
 
             <!-- ── Title block ───────────────────────────────────────────── -->
 
-            <!-- "MANIC" in grass green, pixel font -->
+            <!-- "MEIN" in grass green, pixel font -->
             <Label Text="MEIN"
                    FontFamily="PressStart2PRegular"
                    FontSize="42"
@@ -177,7 +45,7 @@
                 </Label.Shadow>
             </Label>
 
-            <!-- "DIGGER" in stone white, slightly smaller, offset right for asymmetry -->
+            <!-- "KRAFT" in stone white, slightly smaller, offset right for asymmetry -->
             <Label Text="KRAFT"
                    FontFamily="PressStart2PRegular"
                    FontSize="28"

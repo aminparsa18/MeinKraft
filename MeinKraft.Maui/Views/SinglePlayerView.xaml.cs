@@ -1,121 +1,97 @@
+using System.Collections.ObjectModel;
+
 namespace MeinKraft.Maui.Views;
-
-/// <summary>Represents one save-slot entry in the list.</summary>
-public class SaveSlot
-{
-    public string Name { get; init; } = string.Empty;
-    public string FilePath { get; init; } = string.Empty;
-    public DateTime LastPlayed { get; init; }
-
-    public string LastPlayedText =>
-        LastPlayed == DateTime.MinValue
-            ? "never played"
-            : $"last played  {LastPlayed:MMM dd yyyy}";
-}
 
 public partial class SinglePlayerView : ContentPage
 {
-    // ── Services ──────────────────────────────────────────────────────────────
+    private readonly IWorldApiService _worldApi;
+    private readonly ISessionApiService _sessionApi;
 
-    private readonly ISaveGameService _saveGameService;
+    public ObservableCollection<WorldInfo> Worlds { get; } = [];
 
-    // ── Commands (bound from XAML via RelativeSource AncestorType) ────────────
+    // Commands bound from CollectionView item templates via RelativeSource
+    public Command<WorldInfo> PlaySlotCommand { get; }
+    public Command<WorldInfo> DeleteSlotCommand { get; }
 
-    public Command<SaveSlot> LoadSlotCommand { get; }
-    public Command<SaveSlot> DeleteSlotCommand { get; }
-
-    // ── Save folder ───────────────────────────────────────────────────────────
-
-    private static string SaveFolder => Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-        "Manic Digger Save");
-
-    // ── Construction ──────────────────────────────────────────────────────────
-
-    public SinglePlayerView(ISaveGameService saveGameService)
+    public SinglePlayerView(IWorldApiService worldApi, ISessionApiService sessionApi)
     {
         InitializeComponent();
+        _worldApi = worldApi;
+        _sessionApi = sessionApi;
 
-        _saveGameService = saveGameService;
-
-        // Expose commands as properties so CollectionView item templates can bind
-        // via RelativeSource AncestorType={x:Type ContentPage}.
-        LoadSlotCommand = new Command<SaveSlot>(LoadSlot);
-        DeleteSlotCommand = new Command<SaveSlot>(async slot => await DeleteSlotAsync(slot));
+        PlaySlotCommand = new Command<WorldInfo>(async w => await PlayWorldAsync(w));
+        DeleteSlotCommand = new Command<WorldInfo>(async w => await DeleteWorldAsync(w));
 
         BindingContext = this;
     }
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
-        RefreshSlotList();
+        await LoadWorldsAsync();
     }
 
-    // ── Slot list ─────────────────────────────────────────────────────────────
+    // ── Load ──────────────────────────────────────────────────────────────────
 
-    private void RefreshSlotList()
+    private async Task LoadWorldsAsync()
     {
-        Directory.CreateDirectory(SaveFolder);
-
-        var slots = Directory
-            .EnumerateFiles(SaveFolder, "*.*")
-            .Where(f => f.EndsWith(".mddbs", StringComparison.OrdinalIgnoreCase)
-                     || f.EndsWith(".mdss", StringComparison.OrdinalIgnoreCase))
-            .OrderByDescending(File.GetLastWriteTime)
-            .Select(path => new SaveSlot
-            {
-                Name = Path.GetFileNameWithoutExtension(path),
-                FilePath = path,
-                LastPlayed = File.GetLastWriteTime(path),
-            })
-            .ToList();
-
-        SaveSlotList.ItemsSource = slots;
-        EmptyState.IsVisible = slots.Count == 0;
-    }
-
-    // ── Slot actions ──────────────────────────────────────────────────────────
-
-    private async void LoadSlot(SaveSlot slot)
-    {
-        _saveGameService.InitialiseSession(SaveTarget.FromFile(slot.FilePath));
-        await Shell.Current.GoToAsync("//GameView");
-    }
-
-    private async Task DeleteSlotAsync(SaveSlot slot)
-    {
-        bool confirmed = await DisplayAlertAsync(
-            title: "Delete world?",
-            message: $"\"{slot.Name}\" will be permanently deleted.",
-            accept: "Delete",
-            cancel: "Cancel");
-
-        if (!confirmed) return;
+        ShowLoading();
 
         try
         {
-            // Sentinel file + sibling data directory (region-file format).
-            File.Delete(slot.FilePath);
+            IReadOnlyList<WorldInfo> worlds = await _worldApi.ListAsync();
 
-            string dataDir = Path.Combine(
-                Path.GetDirectoryName(slot.FilePath)!,
-                Path.GetFileNameWithoutExtension(slot.FilePath));
+            Worlds.Clear();
+            foreach (WorldInfo? w in worlds)
+            {
+                Worlds.Add(w);
+            }
 
-            if (Directory.Exists(dataDir))
-                Directory.Delete(dataDir, recursive: true);
+            if (Worlds.Count == 0)
+            {
+                ShowEmpty();
+            }
+            else
+            {
+                ShowList();
+            }
         }
         catch (Exception ex)
         {
-            await DisplayAlertAsync("Error", $"Could not delete save:\n{ex.Message}", "OK");
+            ShowError($"could not load worlds:\n{ex.Message}");
         }
-
-        RefreshSlotList();
     }
 
-    // ── Button click handlers ─────────────────────────────────────────────────
+    // ── Play ──────────────────────────────────────────────────────────────────
+
+    private async Task PlayWorldAsync(WorldInfo world)
+    {
+        ShowStatus($"starting \"{world.Name}\"...");
+
+        try
+        {
+            StartSessionResponse? session = await _sessionApi.StartAsync(world.Name);
+            if (session is null)
+            {
+                ShowStatus("failed to start session.", isError: true);
+                return;
+            }
+
+            Microsoft.Maui.Storage.Preferences.Set("session_port", session.Port);
+            Microsoft.Maui.Storage.Preferences.Set("session_id", session.SessionId.ToString());
+            Microsoft.Maui.Storage.Preferences.Set("server_ip", "192.168.0.101");
+
+            await Shell.Current.GoToAsync("//GameView");
+        }
+        catch (Exception ex)
+        {
+            ShowStatus($"error: {ex.Message}", isError: true);
+        }
+    }
+
+    // ── New world ─────────────────────────────────────────────────────────────
 
     private async void OnNewWorldClicked(object sender, EventArgs e)
     {
@@ -123,36 +99,131 @@ public partial class SinglePlayerView : ContentPage
 
         string? name = await DisplayPromptAsync(
             title: "New World",
-            message: "Enter a name for your world:",
+            message: "Name your world:",
             accept: "Create",
             cancel: "Cancel",
             placeholder: defaultName,
             maxLength: 32,
             keyboard: Keyboard.Text);
 
-        if (name is null) return;
-        if (string.IsNullOrWhiteSpace(name)) name = defaultName;
-
-        foreach (char c in Path.GetInvalidFileNameChars())
-            name = name.Replace(c, '_');
-
-        string path = Path.Combine(SaveFolder, name + ".mddbs");
-
-        if (File.Exists(path))
+        if (name is null)
         {
-            await DisplayAlertAsync("Name taken", $"A world named \"{name}\" already exists.", "OK");
             return;
         }
 
-        Directory.CreateDirectory(SaveFolder);
-        File.WriteAllText(path, string.Empty);   // sentinel file
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            name = defaultName;
+        }
 
-        _saveGameService.InitialiseSession(SaveTarget.NewGame(path));
-        await Shell.Current.GoToAsync("//GameView");
+        ShowStatus("creating world...");
+
+        try
+        {
+            WorldInfo? world = await _worldApi.CreateAsync(name);
+            if (world is null)
+            {
+                ShowStatus("failed to create world.", isError: true);
+                return;
+            }
+
+            await PlayWorldAsync(world);
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Conflict)
+        {
+            ShowStatus("a world with that name already exists.", isError: true);
+        }
+        catch (Exception ex)
+        {
+            ShowStatus($"error: {ex.Message}", isError: true);
+        }
     }
 
-    private async void OnBackClicked(object sender, EventArgs e)
+    // ── Delete ────────────────────────────────────────────────────────────────
+
+    private async Task DeleteWorldAsync(WorldInfo world)
     {
-        await Shell.Current.GoToAsync("//MainMenuView");
+        bool confirmed = await DisplayAlertAsync(
+            "Delete world?",
+            $"\"{world.Name}\" will be permanently deleted.",
+            "Delete",
+            "Cancel");
+
+        if (!confirmed)
+        {
+            return;
+        }
+
+        ShowStatus("deleting...");
+
+        try
+        {
+            await _worldApi.DeleteAsync(world.Name);
+            Worlds.Remove(world);
+            StatusLabel.IsVisible = false;
+
+            if (Worlds.Count == 0)
+            {
+                ShowEmpty();
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowStatus($"could not delete: {ex.Message}", isError: true);
+        }
+    }
+
+    // ── Navigation ────────────────────────────────────────────────────────────
+
+    private async void OnBackClicked(object sender, EventArgs e)
+        => await Shell.Current.GoToAsync("//MainMenuView");
+
+    private async void OnRetryClicked(object sender, EventArgs e)
+        => await LoadWorldsAsync();
+
+    // ── State helpers ─────────────────────────────────────────────────────────
+
+    private void ShowLoading()
+    {
+        LoadingState.IsVisible = true;
+        EmptyState.IsVisible = false;
+        ErrorState.IsVisible = false;
+        WorldList.IsVisible = false;
+        StatusLabel.IsVisible = false;
+    }
+
+    private void ShowEmpty()
+    {
+        LoadingState.IsVisible = false;
+        EmptyState.IsVisible = true;
+        ErrorState.IsVisible = false;
+        WorldList.IsVisible = false;
+    }
+
+    private void ShowList()
+    {
+        LoadingState.IsVisible = false;
+        EmptyState.IsVisible = false;
+        ErrorState.IsVisible = false;
+        WorldList.IsVisible = true;
+        WorldList.ItemsSource = Worlds;
+    }
+
+    private void ShowError(string message)
+    {
+        ErrorLabel.Text = message;
+        LoadingState.IsVisible = false;
+        EmptyState.IsVisible = false;
+        ErrorState.IsVisible = true;
+        WorldList.IsVisible = false;
+    }
+
+    private void ShowStatus(string message, bool isError = false)
+    {
+        StatusLabel.Text = message;
+        StatusLabel.TextColor = isError
+            ? Color.FromArgb("#e05050")
+            : Color.FromArgb("#e8a838");
+        StatusLabel.IsVisible = true;
     }
 }

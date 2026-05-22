@@ -1,0 +1,1075 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<EnableSdkContainerSupport>true</EnableSdkContainerSupport>
+		<ContainerRepository>meinkraft-server</ContainerRepository>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		
+		<!-- Same metadata as the main project -->
+		<Version>1.1.3</Version>
+		<AssemblyVersion>$(Version).0</AssemblyVersion>
+		<FileVersion>$(Version).0</FileVersion>
+		<Authors>Amin Parsa</Authors>
+		<Product>Mein Kraft</Product>
+		<Description>Core game logic for Mein Kraft</Description>
+		<Copyright>Copyright © 2026 Amin Parsa</Copyright>
+		<Platforms>AnyCPU;x64</Platforms>
+	</PropertyGroup>
+	<ItemGroup>
+	  <PackageReference Include="Jint" Version="4.9.1" />
+	  <PackageReference Include="System.Drawing.Common" Version="10.0.8" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\MeinKraft.Shared\MeinKraft.Shared.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Update="wwwroot\assets_manifest.txt">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\localization\de.json">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\localization\en.json">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\ani5.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\build.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\clone.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\death.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\destruct.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\Dry Fire Gun-SoundBible.com-2053652037.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\fallloop.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\glow.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\grass_tiled.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\grenadebounce.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\grenadeexplosion.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\grenadestart.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\grenadethrow.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\grunt1.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\grunt2.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\gui\background.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\gui\button.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\gui\button_sel.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\gui\logo.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\gui\mousecursor.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\gui\serverlist_entry_background.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\gui\serverlist_entry_differentversion.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\gui\serverlist_entry_noimage.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\gui\serverlist_entry_noresponse.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\gui\serverlist_nav_down.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\gui\serverlist_nav_up.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\gui\ui_bar_background.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\gui\ui_bar_inner.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\inventory\activematerial.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\inventory\inventory.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\inventory\materials.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\M1GarandGun-SoundBible.com-1519788442.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\M1GarandGun-SoundBible.com-15197884422.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\md.ico">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\message.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\moon.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\rail1.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\rail2.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\rail3.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\rail4.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\railnoise.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\shotgun-reload-old_school-RA_The_Sun_God-580332022.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\sky.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\skyspherenight.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\sun.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\tnt.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\walk1.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\walk2.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\walk3.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\walk4.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\walksnow1.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\walksnow2.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\walksnow3.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\local\walksnow4.ogg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Adminium.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Apples.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\AquaGreenCloth.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Asphalt.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\AutumnApples.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\AutumnGrass.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\AutumnGrassSide.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\AutumnLeaves.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\BirchLeaves.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\BirchSapling.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\BirchTreeTrunk.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\BirchTreeTrunkTopBottom.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\BirchWood.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\BirchWoodHalf.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\BirchWoodHalfInventory.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\BlackCloth.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\BlueCloth.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Bookcase.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Brick.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\BrickHalf.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\BrickHalfInventory.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\BrownMushroom.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\BrushedMetal.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\BuildPermission0.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\BuildPermission1.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\BuildPermission2.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\BuildPermission3.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Cactus.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\CactusTopBottom.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\CakeSide.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\CakeTop.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Camouflage.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\ChemicalGreen.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Clay.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\CoalOre.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Cobblestone.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\CobblestoneHalf.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\CobblestoneHalfInventory.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Coins.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\CompassInventory.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\CraftingTableSide.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\CraftingTableTopBottom.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Crops1.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Crops2.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Crops3.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Crops4.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\CyanCloth.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\DeadPlant.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Dirt.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\DirtBrick.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\DirtForFarming.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\DoorBottom.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\DoorTop.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\DoubleStairSide.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Empty.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Fence.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\FillArea.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\FillEnd.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\FillStart.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Fire.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Glass.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\GlassDeskSide.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\GoldBarFrontBack.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\GoldBarInvetory.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\GoldBarSide.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\GoldBarTopBottom.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\GoldBlock.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\GoldCoin.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\GoldOre.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Granite.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Grass.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\GrassPlant.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\GrassSide.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Gravel.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Gray.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\GrayCloth.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\GreenCloth.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Grenade.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Hay.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Hurt.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Ice.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\IndigoCloth.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\IronBlock.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\IronOre.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Ladder.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Lava.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\LightGreenCloth.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\LuxuryRoof.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\MagentaCloth.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Marble.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Minecart.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\MinecartTop.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Mosaik.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\MossyCobblestone.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\MossyCobblestoneHalf.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\MossyCobblestoneHalfInventory.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\OakLeaves.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\OakSapling.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\OakTreeTrunk.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\OakTreeTrunkTopBottom.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\OakWood.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\OakWoodHalf.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\OakWoodHalfInventory.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Obsidian.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\OrangeCloth.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\PermissionSign.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\PinkCloth.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\PurpleCloth.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail0.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail1.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail10.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail11.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail12.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail13.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail14.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail15.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail16.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail17.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail18.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail19.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail2.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail20.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail21.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail22.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail23.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail24.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail25.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail26.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail27.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail28.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail29.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail3.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail30.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail31.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail32.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail33.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail34.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail35.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail36.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail37.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail38.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail39.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail4.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail40.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail41.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail42.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail43.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail44.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail45.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail46.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail47.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail48.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail49.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail5.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail50.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail51.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail52.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail53.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail54.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail55.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail56.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail57.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail58.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail59.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail6.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail60.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail61.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail62.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail63.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail7.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail8.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Rail9.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart0.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart1.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart10.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart11.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart12.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart13.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart14.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart15.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart16.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart17.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart2.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart3.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart4.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart5.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart6.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart7.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart8.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RailPart9.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RedCloth.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RedMushroom.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RedRoseDecorations.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RedSand.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\RedSandstone.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Roof.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Salt.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Sand.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\SandBrick.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\SandBrickHalf.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\SandBrickHalfInventory.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Sandstone.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Sign.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\SilverCoin.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\SilverOre.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Sponge.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\SpringGrass.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\SpringGrassSide.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\SpruceLeaves.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\SpruceSapling.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\SpruceTreeTrunk.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\SpruceTreeTrunkTopBottom.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\SpruceWood.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\SpruceWoodHalf.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\SpruceWoodHalfInventory.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Stair.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\StairInventory.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\StairSide.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Stone.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\TNT.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\TNTBottom.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\TNTTop.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Torch.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\TorchTop.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Trampoline.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Unknown.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\VandalFinder.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\VioletCloth.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\Water.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\WhiteCloth.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\WinterApples.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\WinterGrass.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\WinterGrassSide.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\WinterLeaves.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\WoodBlock.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\YellowCloth.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\YellowFlowerDecorations.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blocks\YellowThing.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\blood.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\compass.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\compassneedle.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\disconnected.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\minecart.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\mineplayer.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\monsters\cyclops.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\monsters\cyclops.txt">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\monsters\dragon.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\monsters\dragon.txt">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\monsters\imp.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\monsters\imp.txt">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\monsters\impfire.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\monsters\zombie.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\monsters\zombie.txt">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\permissionsignmodel.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\player.txt">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\signmodel.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\signmodel.txt">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\skysphere.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\target.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\thumbnail.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\TouchCamera.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\TouchInventory.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\TouchMenu.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\TouchTalk.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\blocks\AmmoPack.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\blocks\AmmoTop.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\blocks\MedicalKit.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\blocks\Pistol.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\blocks\Rifle.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\blocks\Shotgun.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\blocks\SubmachineGun.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\gui\grenadehand.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\gui\pistolhand.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\gui\pistolhandsights.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\gui\riflehand.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\gui\riflehandsights.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\gui\SelectClass.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\gui\SelectSubclass.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\gui\SelectTeam.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\gui\shotgunhand.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\gui\shotgunhandsights.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\gui\submachinegunhand.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\gui\submachinegunhandsights.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\models\playerwar.txt">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\models\playerwardead.txt">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\models\playerwarpistol.txt">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\models\playerwarrifle.txt">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\models\playerwarshotgun.txt">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\models\playerwarsubmachinegun.txt">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\playerblue.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	  <Content Update="wwwroot\public\war\playergreen.png">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </Content>
+	</ItemGroup>
+</Project>
