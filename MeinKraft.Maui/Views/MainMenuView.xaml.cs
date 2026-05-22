@@ -1,3 +1,5 @@
+using MeinKraft.Maui.Services;
+
 namespace MeinKraft.Maui.Views;
 
 public partial class MainMenuView : ContentPage
@@ -6,7 +8,7 @@ public partial class MainMenuView : ContentPage
 	{
 		InitializeComponent();
 #if WINDOWS
-       // gameWindowService.ReleaseCursor();
+        ((MauiGameWindowService) gameWindowService).ReleaseCursor();
 #endif
     }
 

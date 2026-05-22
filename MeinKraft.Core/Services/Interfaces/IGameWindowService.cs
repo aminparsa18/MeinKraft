@@ -61,9 +61,8 @@ public interface IGameWindowService
     bool IsCached(string md5);
     string QueryStringValue(string key);
     void SetWindowCursor(int hotx, int hoty, int sizex, int sizey, byte[] imgdata, int imgdataLength);
-#if WINDOWS
+
   //  void ReleaseCursor();
-#endif
     void RestoreWindowCursor();
 
    // GameWindow Window { get; set; }

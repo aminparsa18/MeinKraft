@@ -136,8 +136,9 @@ public partial class GameView : ContentPage, IDisposable
         base.OnDisappearing();
         _gameLoopTimer?.Stop();
         _gameLoopTimer = null;
-
 #if WINDOWS
+        ((MauiGameWindowService)_gameWindowService).ReleaseCursor();
+
         _gameWindowService.ExitMousePointerLock();
 
         IntPtr hwnd = WinRT.Interop.WindowNative.GetWindowHandle(

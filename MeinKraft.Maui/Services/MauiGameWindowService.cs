@@ -166,7 +166,6 @@ public sealed partial class MauiGameWindowService : IGameWindowService
     public void MouseCursorSetVisible(bool value)
     {
         _mouseCursorVisible = value;
-
     }
 
     public void RequestMousePointerLock() { MouseCursorSetVisible(false); _mousePointerLocked = true; }
